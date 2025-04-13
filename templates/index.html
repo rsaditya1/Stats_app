@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Stats</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>My Character</h1>
+    {% for stat, value in stats.items() %}
+        <p>{{ stat.capitalize() }}: <span id="{{ stat }}">{{ value }}</span>
+        <button onclick="updateStat('{{ stat }}')">+1</button></p>
+    {% endfor %}
+
+    <script>
+        function updateStat(stat) {
+            fetch("/update", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ stat })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(stat).textContent = data.new_value;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
